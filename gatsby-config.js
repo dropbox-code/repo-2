@@ -14,10 +14,10 @@ module.exports = {
   siteMetadata: {
     pages: [
       {
-        title: 'Search frame',
-        path: '/'
+        title: 'search',
+        path: '/search-frame/index.md'
       }
-    ],
+    ]
   },
   plugins: [`@adobe/gatsby-theme-aio`],
   pathPrefix: process.env.PATH_PREFIX || '/search-frame/'
