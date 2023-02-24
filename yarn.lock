@@ -9680,6 +9680,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"gatsby-plugin-resolve-src@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "gatsby-plugin-resolve-src@npm:2.1.0"
+  peerDependencies:
+    gatsby: ">2.0.0-alpha"
+  checksum: df02440f4b703d9323bffc3db6f02d8db0401281afd220d7857547de28cf7cf9c97454f604e9cdb8686dcc898624bfb0164d28b04f938b339515b9ece1e0908c
+  languageName: node
+  linkType: hard
+
 "gatsby-plugin-sharp@npm:^4.23.0":
   version: 4.25.0
   resolution: "gatsby-plugin-sharp@npm:4.25.0"
@@ -16969,6 +16978,7 @@ __metadata:
   dependencies:
     "@adobe/gatsby-theme-aio": ^4.8.1
     gatsby: 4.22.0
+    gatsby-plugin-resolve-src: ^2.1.0
     react: ^17.0.2
     react-dom: ^17.0.2
   languageName: unknown
