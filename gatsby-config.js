@@ -19,6 +19,6 @@ module.exports = {
       }
     ]
   },
-  plugins: [`@adobe/gatsby-theme-aio`, `gatsby-plugin-resolve-src`],
+  plugins: [`@adobe/gatsby-theme-aio`],
   pathPrefix: process.env.PATH_PREFIX || '/search-frame/'
 };
