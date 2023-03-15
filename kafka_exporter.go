@@ -56,6 +56,7 @@ var (
 	consumergroupLagSum                *prometheus.Desc
 	consumergroupLagZookeeper          *prometheus.Desc
 	consumergroupMembers               *prometheus.Desc
+	topicOfflinePartitions             *prometheus.Desc
 )
 
 // Exporter collects Kafka stats from the given server and exports them using
@@ -308,6 +309,7 @@ func (e *Exporter) Describe(ch chan<- *prometheus.Desc) {
 	ch <- consumergroupLag
 	ch <- consumergroupLagZookeeper
 	ch <- consumergroupLagSum
+	ch <- topicOfflinePartitions
 }
 
 // Collect fetches the stats from configured Kafka location and delivers them
@@ -411,10 +413,12 @@ func (e *Exporter) collect(ch chan<- prometheus.Metric) {
 		e.mu.Lock()
 		offset[topic] = make(map[int32]int64, len(partitions))
 		e.mu.Unlock()
+		numOfflinePartitions := 0
 		for _, partition := range partitions {
 			broker, err := e.client.Leader(topic, partition)
 			if err != nil {
 				klog.Errorf("Cannot get leader of topic %s partition %d: %v", topic, partition, err)
+				numOfflinePartitions += 1
 			} else {
 				ch <- prometheus.MustNewConstMetric(
 					topicPartitionLeader, prometheus.GaugeValue, float64(broker.ID()), topic, strconv.FormatInt(int64(partition), 10),
@@ -499,6 +503,10 @@ func (e *Exporter) collect(ch chan<- prometheus.Metric) {
 				}
 			}
 		}
+
+		ch <- prometheus.MustNewConstMetric(
+			topicOfflinePartitions, prometheus.GaugeValue, float64(numOfflinePartitions), topic,
+		)
 	}
 
 	loopTopics := func() {
@@ -882,6 +890,12 @@ func setup(
 		prometheus.BuildFQName(namespace, "consumergroup", "members"),
 		"Amount of members in a consumer group",
 		[]string{"consumergroup"}, labels,
+	)
+
+	topicOfflinePartitions = prometheus.NewDesc(
+		prometheus.BuildFQName(namespace, "topic", "offline_partitions"),
+		"Number of Offline Partitions for a Topic",
+		[]string{"topic"}, labels,
 	)
 
 	if logSarama {
