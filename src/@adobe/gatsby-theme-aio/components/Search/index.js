@@ -32,6 +32,8 @@ import { ActionButton } from '@adobe/gatsby-theme-aio/src/components/ActionButto
 import { Close, Magnify } from '@adobe/gatsby-theme-aio/src/components/Icons';
 import { Checkbox } from '@adobe/gatsby-theme-aio/src/components/Checkbox';
 import { ProgressCircle } from '@adobe/gatsby-theme-aio/src/components/ProgressCircle';
+import { Picker, PickerButton } from '@adobe/gatsby-theme-aio/src/components/Picker';
+import AlertDialog from '@adobe/gatsby-theme-aio/src/components/AlertDialog';
 
 const SEARCH_INPUT_WIDTH = '688px';
 const SEARCH_INDEX_ALL = 'All Products';
@@ -273,6 +275,9 @@ const Search = ({
   const [isSuggestionsOpen, setIsSuggestionsOpen] = useState(false);
   const [triggerSearch, setTriggerSearch] = useState(false);
   const [searchQueryCounter, setSearchQueryCounter] = useState(0);
+  const [openProductPicker, setOpenProductPicker] = useState(false);
+  const [openKeywordPicker, setOpenKeywordPicker] = useState(false);
+  const [mobileView, setMobileView] = useState(false);
 
   const search = async () => {
     if (searchQuery.length) {
@@ -412,6 +417,21 @@ const Search = ({
       algoliaIndexNames.includes(localIndex)
     );
     setExistingIndices(filteredIndexes);
+  }, []);
+
+  useEffect(() => {
+    if (window.innerWidth <= parseInt(MOBILE_SCREEN_WIDTH)) {
+      setMobileView(true);
+    } else {
+      setMobileView(false);
+    }
+    window.addEventListener('resize', () => {
+      if (window.innerWidth <= parseInt(MOBILE_SCREEN_WIDTH)) {
+        setMobileView(true);
+      } else {
+        setMobileView(false);
+      }
+    });
   }, []);
 
   useEffect(() => {
@@ -607,7 +627,7 @@ const Search = ({
           z-index: 10;
 
           @media screen and (max-width: ${MOBILE_SCREEN_WIDTH}) {
-            top: var(--spectrum-global-dimension-size-1200);
+            // top: var(--spectrum-global-dimension-size-1200);
           }
         `}>
         <div
@@ -617,7 +637,7 @@ const Search = ({
             max-width: ${SEARCH_INPUT_WIDTH};
 
             @media screen and (max-width: ${MOBILE_SCREEN_WIDTH}) {
-              max-width: calc(100vw - var(--spectrum-global-dimension-size-800));
+              width: calc(100vw - var(--spectrum-global-dimension-size-400));
             }
           `}>
           <form
@@ -674,10 +694,8 @@ const Search = ({
 
                   margin-right: var(--spectrum-global-dimension-size-100);
                   margin-bottom: var(--spectrum-global-dimension-size-40);
+                  margin-top: var(--spectrum-global-dimension-size-40);
 
-                  @media screen and (max-width: ${MOBILE_SCREEN_WIDTH}) {
-                    margin-right: 0;
-                  }
                   &:focus {
                     border: 2px solid #007aff !important;
                     border-radius: 15% !important;
@@ -708,7 +726,7 @@ const Search = ({
               width: ${SEARCH_INPUT_WIDTH};
 
               @media screen and (max-width: ${MOBILE_SCREEN_WIDTH}) {
-                max-width: calc(100vw - var(--spectrum-global-dimension-size-800));
+                width: calc(100vw - var(--spectrum-global-dimension-size-400));
               }
             `}>
             {searchSuggestionResults.length > 0 ? (
@@ -747,7 +765,6 @@ const Search = ({
                   } else {
                     productCategory = searchSuggestion.product;
                   }
-
                   return (
                     <>
                       {productCategory && (
@@ -858,6 +875,7 @@ const Search = ({
 
               @media screen and (max-width: ${MOBILE_SCREEN_WIDTH}) {
                 overflow: auto;
+                max-width: ${MOBILE_SCREEN_WIDTH};
                 flex-wrap: wrap;
               }
             `}>
@@ -869,132 +887,320 @@ const Search = ({
                 box-sizing: border-box;
                 padding: var(--spectrum-global-dimension-size-200);
                 width: ${SIDENAV_WIDTH};
-              `}>
-              <h4
-                className="spectrum-Heading spectrum-Heading--sizeXS"
-                css={css`
-                  margin-bottom: var(--spectrum-global-dimension-size-100);
-                `}>
-                Filter by Products
-              </h4>
-              <div
-                css={css`
-                  display: flex;
-                  flex-direction: column;
-                  overflow-y: auto;
-                  overflow-x: hidden;
-                  max-height: 30%;
-                  width: ${SIDENAV_WIDTH};
-                  @media screen and (max-width: ${MOBILE_SCREEN_WIDTH}) {
-                    margin-bottom: 0;
-                  }
-                `}>
-                {productResults.map((productName, i) => {
-                  return (
-                    <Checkbox
-                      key={i}
-                      isSelected={
-                        productName === SEARCH_INDEX_ALL
-                          ? selectedIndex.includes('all')
-                          : selectedIndex.some(index => {
-                              return getIndexesFromProduct(productName, indexAll).includes(index);
-                            })
-                      }
-                      value={productName}
-                      onChange={checked => {
-                        if (!checked) {
-                          if (productName === 'All Products') {
-                            setSelectedIndex(selectedIndex.filter(index => index !== 'all'));
-                          } else {
-                            setSelectedIndex(
-                              selectedIndex.filter(
-                                index =>
-                                  !getIndexesFromProduct(productName, indexAll).includes(index)
-                              )
-                            );
-                          }
-                        } else {
-                          if (productName === 'All Products') {
-                            setSelectedIndex(['all']);
-                          } else {
-                            setSelectedIndex([
-                              ...selectedIndex.filter(index => index !== 'all'),
-                              ...getIndexesFromProduct(productName, indexAll),
-                            ]);
-                          }
-                        }
-                        setSelectedKeywords([]);
-                        setTriggerSearch(true);
-                      }}>
-                      <span>{productName}</span>
-                    </Checkbox>
-                  );
-                })}
-              </div>
-              <h4
-                className="spectrum-Heading spectrum-Heading--sizeXS"
-                css={css`
-                  margin-top: var(--spectrum-global-dimension-size-200);
-                  margin-bottom: var(--spectrum-global-dimension-size-100);
-                `}>
-                Filter by Keywords
-              </h4>
-              <div
-                css={css`
-                  margin-bottom: var(--spectrum-global-dimension-size-100);
-                  display: flex;
-                  flex-direction: column;
-                  overflow-y: auto;
-                  overflow-x: hidden;
-                  max-height: 50%;
-                  width: ${SIDENAV_WIDTH};
-                  @media screen and (max-width: ${MOBILE_SCREEN_WIDTH}) {
-                    margin-bottom: 0;
-                  }
-                `}>
-                {keywordResults.length > 0 ? (
-                  keywordResults.map((keywordResult, i) => {
-                    const keyword = Object.keys(keywordResult)[0];
 
-                    return (
-                      <Checkbox
-                        key={i}
-                        isSelected={selectedKeywords.includes(keyword)}
-                        value={keyword}
-                        onChange={checked => {
-                          if (checked) {
-                            setSelectedKeywords(selectedKeywords => [...selectedKeywords, keyword]);
-                          } else {
-                            setSelectedKeywords(
-                              selectedKeywords.filter(
-                                selectedKeyword => selectedKeyword !== keyword
-                              )
-                            );
+                @media screen and (max-width: ${MOBILE_SCREEN_WIDTH}) {
+                    overflow: auto;
+                    max-width: ${MOBILE_SCREEN_WIDTH};
+                    width: calc(100vw - var(--spectrum-global-dimension-size-400));
+                    flex-direction: row;
+                    align-content: space-around;
+                    flex-wrap: wrap;
+                    padding: 0 var(--spectrum-global-dimension-size-200);
+                    gap: var(--spectrum-global-dimension-size-200);
+                  }
+              `}>
+
+              {mobileView && (
+                <div>
+                  <h4
+                    className="spectrum-Heading spectrum-Heading--sizeXS"
+                    css={css`
+                      margin-bottom: var(--spectrum-global-dimension-size-100);
+                    `}>
+                    Filter by Products
+                  </h4>
+                  <PickerButton
+                    onClick={() => setOpenProductPicker(!openProductPicker)}
+                    isOpen={openProductPicker}>
+                    {productResults
+                      .filter(productName => productName !== SEARCH_INDEX_ALL)
+                      .map(productName => productName)
+                      .join(', ')}
+                  </PickerButton>
+
+                  <AlertDialog
+                    isOpen={openProductPicker}
+                    setIsOpen={setOpenProductPicker}
+                    title="Select Product">
+                    <div
+                      css={css`
+                        display: flex;
+                        flex-direction: column;
+                        overflow-y: auto;
+                        overflow-x: hidden;
+                        max-height: 100%;
+                        width: 100%;
+                      `}>
+                      {productResults.map((productName, i) => {
+                        return (
+                          <Checkbox
+                            key={i}
+                            isSelected={
+                              productName === SEARCH_INDEX_ALL
+                                ? selectedIndex.includes('all')
+                                : selectedIndex.some(index => {
+                                    return getIndexesFromProduct(productName, indexAll).includes(
+                                      index
+                                    );
+                                  })
+                            }
+                            value={productName}
+                            onChange={checked => {
+                              if (!checked) {
+                                if (productName === 'All Products') {
+                                  setSelectedIndex(selectedIndex.filter(index => index !== 'all'));
+                                } else {
+                                  setSelectedIndex(
+                                    selectedIndex.filter(
+                                      index =>
+                                        !getIndexesFromProduct(productName, indexAll).includes(
+                                          index
+                                        )
+                                    )
+                                  );
+                                }
+                              } else {
+                                if (productName === 'All Products') {
+                                  setSelectedIndex(['all']);
+                                } else {
+                                  setSelectedIndex([
+                                    ...selectedIndex.filter(index => index !== 'all'),
+                                    ...getIndexesFromProduct(productName, indexAll),
+                                  ]);
+                                }
+                              }
+                              setSelectedKeywords([]);
+                              setTriggerSearch(true);
+                            }}>
+                            <span>{productName}</span>
+                          </Checkbox>
+                        );
+                      })}
+                    </div>
+                  </AlertDialog>
+                </div>
+              )}
+
+              {!mobileView && (
+                <>
+                  <h4
+                    className="spectrum-Heading spectrum-Heading--sizeXS"
+                    css={css`
+                      margin-bottom: var(--spectrum-global-dimension-size-100);
+
+                      @media screen and (max-width: ${MOBILE_SCREEN_WIDTH}) {
+                        display: none;
+                      }
+                    `}>
+                    Filter by Products
+                  </h4>
+
+                  <div
+                    css={css`
+                      display: flex;
+                      flex-direction: column;
+                      overflow-y: auto;
+                      overflow-x: hidden;
+                      max-height: 30%;
+                      width: ${SIDENAV_WIDTH};
+                      @media screen and (max-width: ${MOBILE_SCREEN_WIDTH}) {
+                        display: none;
+                        margin-bottom: 0;
+                      }
+                    `}>
+                    {productResults.map((productName, i) => {
+                      return (
+                        <Checkbox
+                          key={i}
+                          isSelected={
+                            productName === SEARCH_INDEX_ALL
+                              ? selectedIndex.includes('all')
+                              : selectedIndex.some(index => {
+                                  return getIndexesFromProduct(productName, indexAll).includes(
+                                    index
+                                  );
+                                })
                           }
-                          setTriggerSearch(true);
-                        }}>
-                        <span
-                          css={css`
-                            white-space: nowrap;
-                            text-overflow: ellipsis;
-                          `}>
-                          {keyword}
-                        </span>
-                        {/* will enable once this makes sense currently confuses user to think it's # of results */}
-                        {/* <em>&nbsp;({keywordResult[keyword]})</em> */}
-                      </Checkbox>
-                    );
-                  })
-                ) : (
-                  <div className="spectrum-Body spectrum-Body--sizeS">
-                    No filter options available
+                          value={productName}
+                          onChange={checked => {
+                            if (!checked) {
+                              if (productName === 'All Products') {
+                                setSelectedIndex(selectedIndex.filter(index => index !== 'all'));
+                              } else {
+                                setSelectedIndex(
+                                  selectedIndex.filter(
+                                    index =>
+                                      !getIndexesFromProduct(productName, indexAll).includes(index)
+                                  )
+                                );
+                              }
+                            } else {
+                              if (productName === 'All Products') {
+                                setSelectedIndex(['all']);
+                              } else {
+                                setSelectedIndex([
+                                  ...selectedIndex.filter(index => index !== 'all'),
+                                  ...getIndexesFromProduct(productName, indexAll),
+                                ]);
+                              }
+                            }
+                            setSelectedKeywords([]);
+                            setTriggerSearch(true);
+                          }}>
+                          <span>{productName}</span>
+                        </Checkbox>
+                      );
+                    })}
                   </div>
-                )}
-              </div>
+                </>
+              )}
+
+              {mobileView && (
+                <div>
+                  <h4
+                    className="spectrum-Heading spectrum-Heading--sizeXS"
+                    css={css`
+                      margin-bottom: var(--spectrum-global-dimension-size-100);
+                    `}>
+                    Filter by Keywords
+                  </h4>
+                  <PickerButton
+                    onClick={() => setOpenKeywordPicker(!openKeywordPicker)}
+                    isOpen={openKeywordPicker}
+                    css={css``}>
+                    {keywordResults.map(keywordResult => Object.keys(keywordResult)[0]).join(', ')}
+                  </PickerButton>
+
+                  <AlertDialog
+                    isOpen={openKeywordPicker}
+                    setIsOpen={setOpenKeywordPicker}
+                    title="Select Product">
+                    <div
+                      css={css`
+                        display: flex;
+                        flex-direction: column;
+                        overflow-y: auto;
+                        overflow-x: hidden;
+                        max-height: 100%;
+                        width: 100%;
+                      `}>
+                      {keywordResults.length > 0 ? (
+                        keywordResults.map((keywordResult, i) => {
+                          const keyword = Object.keys(keywordResult)[0];
+
+                          return (
+                            <Checkbox
+                              key={i}
+                              isSelected={selectedKeywords.includes(keyword)}
+                              value={keyword}
+                              onChange={checked => {
+                                if (checked) {
+                                  setSelectedKeywords(selectedKeywords => [
+                                    ...selectedKeywords,
+                                    keyword,
+                                  ]);
+                                } else {
+                                  setSelectedKeywords(
+                                    selectedKeywords.filter(
+                                      selectedKeyword => selectedKeyword !== keyword
+                                    )
+                                  );
+                                }
+                                setTriggerSearch(true);
+                              }}>
+                              <span
+                                css={css`
+                                  white-space: nowrap;
+                                  text-overflow: ellipsis;
+                                `}>
+                                {keyword}
+                              </span>
+                              {/* will enable once this makes sense currently confuses user to think it's # of results */}
+                              {/* <em>&nbsp;({keywordResult[keyword]})</em> */}
+                            </Checkbox>
+                          );
+                        })
+                      ) : (
+                        <div className="spectrum-Body spectrum-Body--sizeS">
+                          No filter options available
+                        </div>
+                      )}
+                    </div>
+                  </AlertDialog>
+                </div>
+              )}
+
+              {!mobileView && (
+                <>
+                  <h4
+                    className="spectrum-Heading spectrum-Heading--sizeXS"
+                    css={css`
+                      margin-top: var(--spectrum-global-dimension-size-200);
+                      margin-bottom: var(--spectrum-global-dimension-size-100);
+                    `}>
+                    Filter by Keywords
+                  </h4>
+                  <div
+                    css={css`
+                      margin-bottom: var(--spectrum-global-dimension-size-100);
+                      display: flex;
+                      flex-direction: column;
+                      overflow-y: auto;
+                      overflow-x: hidden;
+                      max-height: 50%;
+                      width: ${SIDENAV_WIDTH};
+                    `}>
+                    {keywordResults.length > 0 ? (
+                      keywordResults.map((keywordResult, i) => {
+                        const keyword = Object.keys(keywordResult)[0];
+
+                        return (
+                          <Checkbox
+                            key={i}
+                            isSelected={selectedKeywords.includes(keyword)}
+                            value={keyword}
+                            onChange={checked => {
+                              if (checked) {
+                                setSelectedKeywords(selectedKeywords => [
+                                  ...selectedKeywords,
+                                  keyword,
+                                ]);
+                              } else {
+                                setSelectedKeywords(
+                                  selectedKeywords.filter(
+                                    selectedKeyword => selectedKeyword !== keyword
+                                  )
+                                );
+                              }
+                              setTriggerSearch(true);
+                            }}>
+                            <span
+                              css={css`
+                                white-space: nowrap;
+                                text-overflow: ellipsis;
+                              `}>
+                              {keyword}
+                            </span>
+                            {/* will enable once this makes sense currently confuses user to think it's # of results */}
+                            {/* <em>&nbsp;({keywordResult[keyword]})</em> */}
+                          </Checkbox>
+                        );
+                      })
+                    ) : (
+                      <div className="spectrum-Body spectrum-Body--sizeS">
+                        No filter options available
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
             </div>
             <div
               css={css`
                 height: 100%;
+                @media screen and (max-width: ${MOBILE_SCREEN_WIDTH}) {
+                  width: 100%;
+                }
               `}>
               {searchResults.length > 0 ? (
                 <div
@@ -1047,6 +1253,9 @@ const Search = ({
                             font-weight: 700;
                             font-style: inherit;
                           }
+                          @media screen and (max-width: ${MOBILE_SCREEN_WIDTH}) {
+                            overflow: hidden;
+                          }
                         `}>
                         <div
                           className="spectrum-Body spectrum-Body--sizeM"
@@ -1073,6 +1282,7 @@ const Search = ({
                           className="spectrum-Body spectrum-Body--sizeS"
                           css={css`
                             margin: var(--spectrum-global-dimension-size-100) 0;
+                            overflow-wrap: break-word;
                           `}
                           dangerouslySetInnerHTML={{ __html: encodeHTML(content) }}
                         />
