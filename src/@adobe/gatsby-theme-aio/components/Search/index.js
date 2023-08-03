@@ -296,7 +296,7 @@ const Search = ({
       if (targetOrigin) {
         window.parent.postMessage(message, targetOrigin);
       }
-
+      setIsSuggestionsOpen(false);
       setShowSearchResults(true);
 
       if (searchQuery !== oldSearchQuery) {
@@ -578,8 +578,7 @@ const Search = ({
         } else {
           setSearchSuggestionResults([]);
         }
-
-        setIsSuggestionsOpen(true);
+        if (!showSearchResults) setIsSuggestionsOpen(true);
       } else {
         setShowClear(false);
         setIsSuggestionsOpen(false);
@@ -589,29 +588,29 @@ const Search = ({
     return () => clearTimeout(timeOutId);
   }, [searchQuery]);
 
-  useEffect(() => {
-    if (suggestionsRef) {
-      if (searchSuggestionResults.length > 0) {
-        const allLinks = suggestionsRef.current.querySelectorAll('a');
-        if (allLinks.length > 0) {
-          allLinks.forEach(link => {
-            link.target = '_top';
-          });
-        }
-      }
-    }
+  // useEffect(() => {
+  //   if (suggestionsRef) {
+  //     if (searchSuggestionResults.length > 0) {
+  //       const allLinks = suggestionsRef.current.querySelectorAll('a');
+  //       if (allLinks.length > 0) {
+  //         allLinks.forEach(link => {
+  //           link.target = '_top';
+  //         });
+  //       }
+  //     }
+  //   }
 
-    if (searchResultsRef) {
-      if (searchResults.length > 0) {
-        const allLinks = searchResultsRef.current.querySelectorAll('a');
-        if (allLinks.length > 0) {
-          allLinks.forEach(link => {
-            link.target = '_top';
-          });
-        }
-      }
-    }
-  }, [searchSuggestionResults, searchResults]);
+  //   if (searchResultsRef) {
+  //     if (searchResults.length > 0) {
+  //       const allLinks = searchResultsRef.current.querySelectorAll('a');
+  //       if (allLinks.length > 0) {
+  //         allLinks.forEach(link => {
+  //           link.target = '_top';
+  //         });
+  //       }
+  //     }
+  //   }
+  // }, [searchSuggestionResults, searchResults]);
 
   return (
     <>
@@ -789,7 +788,7 @@ const Search = ({
                             `}></hr>
                         </>
                       )}
-                      <MenuItem key={searchSuggestion.objectID} href={searchSuggestion.to}>
+                      <MenuItem key={searchSuggestion.objectID} href={searchSuggestion.to} target='_top'>
                         <div
                           css={css`
                             mark,
@@ -889,17 +888,16 @@ const Search = ({
                 width: ${SIDENAV_WIDTH};
 
                 @media screen and (max-width: ${MOBILE_SCREEN_WIDTH}) {
-                    overflow: auto;
-                    max-width: ${MOBILE_SCREEN_WIDTH};
-                    width: calc(100vw - var(--spectrum-global-dimension-size-400));
-                    flex-direction: row;
-                    align-content: space-around;
-                    flex-wrap: wrap;
-                    padding: 0 var(--spectrum-global-dimension-size-200);
-                    gap: var(--spectrum-global-dimension-size-200);
-                  }
+                  overflow: auto;
+                  max-width: ${MOBILE_SCREEN_WIDTH};
+                  width: calc(100vw - var(--spectrum-global-dimension-size-400));
+                  flex-direction: row;
+                  align-content: space-around;
+                  flex-wrap: wrap;
+                  padding: 0 var(--spectrum-global-dimension-size-200);
+                  gap: var(--spectrum-global-dimension-size-200);
+                }
               `}>
-
               {mobileView && (
                 <div>
                   <h4
@@ -1262,7 +1260,7 @@ const Search = ({
                           css={css`
                             margin-bottom: var(--spectrum-global-dimension-size-100);
                           `}>
-                          <AnchorLink to={to}>
+                          <AnchorLink to={to} target='_top'>
                             <span
                               dangerouslySetInnerHTML={{
                                 __html: encodeHTML(title),
@@ -1274,7 +1272,7 @@ const Search = ({
                           css={css`
                             font-style: italic;
                           `}>
-                          <AnchorLink variant="secondary" to={to}>
+                          <AnchorLink variant="secondary" to={to} target='_top'>
                             {to}
                           </AnchorLink>
                         </div>
