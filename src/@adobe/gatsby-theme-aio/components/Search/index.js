@@ -279,6 +279,8 @@ const Search = ({
   const [openKeywordPicker, setOpenKeywordPicker] = useState(false);
   const [mobileView, setMobileView] = useState(false);
 
+  let skipSuggestions = showSearch ? true : false;
+
   const search = async () => {
     if (searchQuery.length) {
       let search;
@@ -453,7 +455,6 @@ const Search = ({
       if (query?.length) {
         setSearchQuery(query);
         setShowClear(true);
-
         setTriggerSearch(true);
       }
 
@@ -464,7 +465,7 @@ const Search = ({
     } else {
       clearQueryStringParameters();
     }
-  }, [showSearch]);
+  }, []);
 
   useEffect(() => {
     if (triggerSearch) {
@@ -501,8 +502,14 @@ const Search = ({
   useEffect(() => {
     const onEscape = ({ key }) => {
       if (key === 'Escape') {
-        setShowSearch(false);
+        setSearchQuery('');
+        setSearchResults([]);
         clearQueryStringParameters();
+        setShowSearchResults(false);
+        setIsSuggestionsOpen(false);
+        setShowSearch(false);
+        setIsLoading(false);
+        skipSuggestions = false;
         const searchClose = document.getElementById('aio-Search-close');
         if (searchClose) searchClose.focus();
       }
@@ -512,105 +519,88 @@ const Search = ({
     return () => {
       document.removeEventListener('keydown', onEscape);
     };
-  }, [setShowSearch]);
+  }, []);
 
   useEffect(() => {
     // simple debouncing strategy for search queries while user is typing
     const timeOutId = setTimeout(() => debounceCallback(), 500);
     const debounceCallback = async () => {
-      if (searchQuery.length && !searchResults.length) {
-        setShowClear(true);
 
-        const suggestions = await searchSuggestions(
-          algolia,
-          searchQuery,
-          indexPrefix,
-          searchIndex,
-          indexAll,
-          existingIndices,
-          setExistingIndices
-        );
-        setSearchQueryCounter(searchQueryCounter + 1);
-        console.log('Total search queries counted is:', searchQueryCounter);
+      if (!skipSuggestions) {
+        if (searchQuery.length && !searchResults.length) {
+          setShowClear(true);
+          setIsLoading(true);
+          setIsSuggestionsOpen(true);
+          const suggestions = await searchSuggestions(
+            algolia,
+            searchQuery,
+            indexPrefix,
+            searchIndex,
+            indexAll,
+            existingIndices,
+            setExistingIndices
+          );
+          setSearchQueryCounter(searchQueryCounter + 1);
+          console.log('Total search queries counted is:', searchQueryCounter);
 
-        if (suggestions?.results?.length) {
-          const results = [];
-          suggestions.results.forEach(({ hits }) => {
-            mapSearchResults(hits, results);
-          });
-          const filteredResults = results.map((searchSuggestion, index, results) => {
-            const to = `${window.location.origin}${searchSuggestion.url}`;
-            const title = searchSuggestion._highlightResult.title?.value
-              ? searchSuggestion._highlightResult.title.value
-              : '';
-            const descriptions = Object.entries(searchSuggestion._highlightResult).filter(optn => {
-              return optn[1].matchedWords.length > 0;
+          if (suggestions?.results?.length) {
+            const results = [];
+            suggestions.results.forEach(({ hits }) => {
+              mapSearchResults(hits, results);
             });
-            const product = searchSuggestion.product ? searchSuggestion.product : '';
-            let content = '';
-            if (descriptions.length > 1) {
-              descriptions.sort((a, b) => {
-                return a[1].value.length > b[1].value.length ? -1 : 1;
-              });
-              content =
-                descriptions[0][1]?.value?.length > descriptions[1][1]?.value?.length
-                  ? descriptions[0][1]?.value
-                  : descriptions[1][1]?.value;
-            } else {
-              content = descriptions[0][1]?.value ? descriptions[0][1]?.value : '';
+            const filteredResults = results.map((searchSuggestion, index, results) => {
+              const to = `${window.location.origin}${searchSuggestion.url}`;
+              const title = searchSuggestion._highlightResult.title?.value
+                ? searchSuggestion._highlightResult.title.value
+                : '';
+              const descriptions = Object.entries(searchSuggestion._highlightResult).filter(
+                optn => {
+                  return optn[1].matchedWords.length > 0;
+                }
+              );
+              const product = searchSuggestion.product ? searchSuggestion.product : '';
+              let content = '';
+              if (descriptions.length > 1) {
+                descriptions.sort((a, b) => {
+                  return a[1].value.length > b[1].value.length ? -1 : 1;
+                });
+                content =
+                  descriptions[0][1]?.value?.length > descriptions[1][1]?.value?.length
+                    ? descriptions[0][1]?.value
+                    : descriptions[1][1]?.value;
+              } else {
+                content = descriptions[0][1]?.value ? descriptions[0][1]?.value : '';
+              }
+
+              content = content.substring(0, 250);
+
+              return {
+                title,
+                to,
+                content,
+                product,
+              };
+            });
+
+            setSearchSuggestionResults(filteredResults);
+
+            if (!searchResults.length) {
+              setShowSearchResults(false);
             }
-
-            content = content.substring(0, 250);
-
-            return {
-              title,
-              to,
-              content,
-              product,
-            };
-          });
-
-          setSearchSuggestionResults(filteredResults);
-
-          if (!searchResults.length) {
-            setShowSearchResults(false);
+          } else {
+            setSearchSuggestionResults([]);
           }
+          setIsLoading(false);
         } else {
           setSearchSuggestionResults([]);
+          setShowClear(false);
+          setIsLoading(false);
         }
-        if (!showSearchResults) setIsSuggestionsOpen(true);
-      } else {
-        setShowClear(false);
-        setIsSuggestionsOpen(false);
       }
     };
 
     return () => clearTimeout(timeOutId);
   }, [searchQuery]);
-
-  // useEffect(() => {
-  //   if (suggestionsRef) {
-  //     if (searchSuggestionResults.length > 0) {
-  //       const allLinks = suggestionsRef.current.querySelectorAll('a');
-  //       if (allLinks.length > 0) {
-  //         allLinks.forEach(link => {
-  //           link.target = '_top';
-  //         });
-  //       }
-  //     }
-  //   }
-
-  //   if (searchResultsRef) {
-  //     if (searchResults.length > 0) {
-  //       const allLinks = searchResultsRef.current.querySelectorAll('a');
-  //       if (allLinks.length > 0) {
-  //         allLinks.forEach(link => {
-  //           link.target = '_top';
-  //         });
-  //       }
-  //     }
-  //   }
-  // }, [searchSuggestionResults, searchResults]);
 
   return (
     <>
@@ -646,6 +636,7 @@ const Search = ({
             className="spectrum-Search"
             onSubmit={async event => {
               event.preventDefault();
+              skipSuggestions = true;
               setSelectedKeywords([]);
               setShowClear(true);
               setTriggerSearch(true);
@@ -728,7 +719,7 @@ const Search = ({
                 width: calc(100vw - var(--spectrum-global-dimension-size-400));
               }
             `}>
-            {searchSuggestionResults.length > 0 ? (
+            {!isLoading && searchSuggestionResults.length > 0 && (
               <Menu
                 ref={suggestionsRef}
                 onKeyDown={({ key }) => {
@@ -788,7 +779,10 @@ const Search = ({
                             `}></hr>
                         </>
                       )}
-                      <MenuItem key={searchSuggestion.objectID} href={searchSuggestion.to} target='_top'>
+                      <MenuItem
+                        key={searchSuggestion.objectID}
+                        href={searchSuggestion.to}
+                        target="_top">
                         <div
                           css={css`
                             mark,
@@ -825,7 +819,20 @@ const Search = ({
                   );
                 })}
               </Menu>
-            ) : (
+            )}
+            {isLoading && searchQuery.length > 0 && (
+              <div
+                css={css`
+                  width: 100%;
+                  height: 100%;
+                  display: grid;
+                  place-items: start center;
+                  margin: 10px 0;
+                `}>
+                <ProgressCircle size="L" />
+              </div>
+            )}
+            {!isLoading && !searchSuggestionResults.length && (
               <div
                 css={css`
                   margin-top: var(--spectrum-global-dimension-size-800);
@@ -852,7 +859,7 @@ const Search = ({
           </Popover>
         </div>
 
-        {isLoading && (
+        {isLoading && showSearchResults && (
           <div
             css={css`
               width: 100%;
@@ -1260,7 +1267,7 @@ const Search = ({
                           css={css`
                             margin-bottom: var(--spectrum-global-dimension-size-100);
                           `}>
-                          <AnchorLink to={to} target='_top'>
+                          <AnchorLink to={to} target="_top">
                             <span
                               dangerouslySetInnerHTML={{
                                 __html: encodeHTML(title),
@@ -1272,7 +1279,7 @@ const Search = ({
                           css={css`
                             font-style: italic;
                           `}>
-                          <AnchorLink variant="secondary" to={to} target='_top'>
+                          <AnchorLink variant="secondary" to={to} target="_top">
                             {to}
                           </AnchorLink>
                         </div>

@@ -546,7 +546,7 @@ export default ({ children, pageContext, location }) => {
               algolia={algolia}
               indexAll={indexAll}
               indexPrefix={algoliaIndexEnv ? algoliaIndexEnv : ''}
-              showSearch={true}
+              showSearch={showSearch}
               setShowSearch={setShowSearch}
               searchButtonId={searchButtonId}
               isIFramed
