@@ -284,7 +284,7 @@ jobs:
         '
     - continue-on-error: true
       name: Create the Badge
-      uses: schneegans/dynamic-badges-action@v1.6.0
+      uses: schneegans/dynamic-badges-action@v1.7.0
       with:
         auth: ${{ secrets.PYTEST_COVERAGE_COMMENT }}
         color: ${{ steps.coverageComment.outputs.color }}
