@@ -553,7 +553,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       id: create-release
       name: Create Release
-      uses: thomaseizinger/create-release@1.0.0
+      uses: thomaseizinger/create-release@2.0.0
       with:
         draft: false
         name: ${{ steps.extract-version.outputs.version }}
