@@ -42,5 +42,5 @@ rusoto_dynamodb = "0.46"
 rusoto_sqs = "0.46"
 spectral = "0.6"
 tokio = { version = "1", features = [ "macros" ] }
-tokio-amqp = "1.0.0"
+tokio-amqp = "2.0.0"
 zookeeper = "0.5"
