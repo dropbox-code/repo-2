@@ -246,7 +246,7 @@ jobs:
         sudo sh -c ''echo 1 > /proc/sys/net/ipv4/ip_forward'''
     - continue-on-error: true
       name: Checkout
-      uses: actions/checkout@v2.3.4
+      uses: actions/checkout@v4.2.1
     - continue-on-error: true
       name: Unshallow
       run: git fetch --prune --unshallow
