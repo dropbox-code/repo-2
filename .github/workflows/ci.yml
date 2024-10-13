@@ -255,7 +255,7 @@ jobs:
         profile: minimal
         toolchain: stable
     - continue-on-error: true
-      uses: Swatinem/rust-cache@v1.3.0
+      uses: Swatinem/rust-cache@v2.7.5
     - continue-on-error: true
       run: cargo clippy --all-targets -- -D warnings
     - name: after
@@ -514,7 +514,7 @@ jobs:
         profile: minimal
         toolchain: 1.46.0
     - continue-on-error: true
-      uses: Swatinem/rust-cache@v1.3.0
+      uses: Swatinem/rust-cache@v2.7.5
     - continue-on-error: true
       run: cargo build
     - name: after
@@ -1023,7 +1023,7 @@ jobs:
         profile: minimal
         toolchain: stable
     - continue-on-error: true
-      uses: Swatinem/rust-cache@v1.3.0
+      uses: Swatinem/rust-cache@v2.7.5
     - continue-on-error: true
       run: cargo test
     - name: after
