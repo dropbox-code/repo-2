@@ -258,7 +258,7 @@ jobs:
         '
     - continue-on-error: true
       name: Create pull request for merging release-branch back into dev
-      uses: thomaseizinger/create-pull-request@1.2.2
+      uses: thomaseizinger/create-pull-request@1.4.0
       with:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         base: dev
