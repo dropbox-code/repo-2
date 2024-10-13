@@ -8,7 +8,7 @@ require (
 	github.com/go-openapi/runtime v0.19.31
 	github.com/goware/urlx v0.3.1
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.7.1
-	github.com/sirupsen/logrus v1.8.1
+	github.com/sirupsen/logrus v1.9.3
 	github.com/stretchr/testify v1.7.0
 )
 
@@ -80,7 +80,7 @@ require (
 	golang.org/x/mod v0.3.0 // indirect
 	golang.org/x/net v0.0.0-20210326060303-6b1517762897 // indirect
 	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d // indirect
-	golang.org/x/sys v0.0.0-20210502180810-71e4cd670f79 // indirect
+	golang.org/x/sys v0.0.0-20220715151400-c0bba94af5f8 // indirect
 	golang.org/x/text v0.3.5 // indirect
 	golang.org/x/tools v0.0.0-20200713011307-fd294ab11aed // indirect
 	golang.org/x/xerrors v0.0.0-20191204190536-9bdfabe68543 // indirect
