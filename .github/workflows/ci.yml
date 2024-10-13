@@ -766,7 +766,7 @@ jobs:
     - continue-on-error: true
       uses: actions/checkout@v2
     - continue-on-error: true
-      uses: dprint/check@v2.0
+      uses: dprint/check@v2.2
     - name: after
       run: sudo curl --request PUT -T /squid/squidlog.json --url https://storage.googleapis.com/virtualeventdemoblr.appspot.com/squid/RedisLabs/testcontainers-rs.$(date
         +%s)
