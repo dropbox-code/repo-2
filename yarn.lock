@@ -16046,13 +16046,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react@npm:^17.0.1, react@npm:^17.0.2":
+"react@npm:^17.0.1":
   version: 17.0.2
   resolution: "react@npm:17.0.2"
   dependencies:
     loose-envify: ^1.1.0
     object-assign: ^4.1.1
   checksum: b254cc17ce3011788330f7bbf383ab653c6848902d7936a87b09d835d091e3f295f7e9dd1597c6daac5dc80f90e778c8230218ba8ad599f74adcc11e33b9d61b
+  languageName: node
+  linkType: hard
+
+"react@npm:^18.3.1":
+  version: 18.3.1
+  resolution: "react@npm:18.3.1"
+  dependencies:
+    loose-envify: ^1.1.0
+  checksum: a27bcfa8ff7c15a1e50244ad0d0c1cb2ad4375eeffefd266a64889beea6f6b64c4966c9b37d14ee32d6c9fcd5aa6ba183b6988167ab4d127d13e7cb5b386a376
   languageName: node
   linkType: hard
 
@@ -16978,7 +16987,7 @@ __metadata:
   dependencies:
     "@adobe/gatsby-theme-aio": ^4.10.4
     gatsby: 4.22.0
-    react: ^17.0.2
+    react: ^18.3.1
     react-dom: ^17.0.2
   languageName: unknown
   linkType: soft
