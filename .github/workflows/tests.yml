@@ -356,7 +356,7 @@ jobs:
       id: fc
       if: ${{ always() }}
       name: find comment
-      uses: peter-evans/find-comment@v2
+      uses: peter-evans/find-comment@v3
       with:
         body-includes: Integration tests ran for
         comment-author: github-actions[bot]
