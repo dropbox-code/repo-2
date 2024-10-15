@@ -253,7 +253,7 @@ jobs:
         '
     - continue-on-error: true
       name: Upload
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: artifact
         path: artifact
@@ -514,13 +514,13 @@ jobs:
         '
     - continue-on-error: true
       name: Upload first
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: artifact1
         path: artifact1
     - continue-on-error: true
       name: Upload second
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: artifact2
         path: artifact2
