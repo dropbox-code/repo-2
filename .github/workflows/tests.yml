@@ -385,7 +385,7 @@ jobs:
       id: update_check_run
       if: ${{ always() }}
       name: set fork job status
-      uses: actions/github-script@v6
+      uses: actions/github-script@v7
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: "if (process.env.event_name !== 'repository_dispatch') {\n  console.log(\"\
