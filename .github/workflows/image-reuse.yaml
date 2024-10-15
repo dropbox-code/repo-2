@@ -263,7 +263,7 @@ jobs:
       uses: actions/checkout@8410ad0602e1e429cee44a835ae9f77f654a6694
     - continue-on-error: true
       name: Setup Golang
-      uses: actions/setup-go@cdcb36043654635271a94b9a6d1392de5bb323a7
+      uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32
       with:
         go-version: ${{ inputs.go-version }}
     - continue-on-error: true
