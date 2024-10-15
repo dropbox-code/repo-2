@@ -1,11 +1,12 @@
 module tools
 
 go 1.21
+toolchain go1.22.5
 
 require (
 	github.com/golangci/golangci-lint v1.55.0
 	github.com/hashicorp/terraform-plugin-docs v0.16.0
-	mvdan.cc/gofumpt v0.5.0
+	mvdan.cc/gofumpt v0.7.0
 )
 
 require (
