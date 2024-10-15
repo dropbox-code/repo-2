@@ -62,7 +62,7 @@ require (
 	github.com/golang/geo v0.0.0-20190916061304-5b978397cfec
 	github.com/golang/protobuf v1.5.1
 	github.com/golang/snappy v0.0.1
-	github.com/google/go-cmp v0.5.5
+	github.com/google/go-cmp v0.5.9
 	github.com/google/go-github/v32 v32.1.0
 	github.com/gopcua/opcua v0.1.13
 	github.com/gorilla/mux v1.7.3
@@ -127,7 +127,7 @@ require (
 	go.starlark.net v0.0.0-20210312235212-74c10e2c17dc
 	go.uber.org/multierr v1.6.0 // indirect
 	golang.org/x/net v0.0.0-20201209123823-ac852fbbde11
-	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
+	golang.org/x/oauth2 v0.23.0
 	golang.org/x/sync v0.0.0-20201020160332-67f06af15bc9
 	golang.org/x/sys v0.0.0-20201119102817-f84b799fce68
 	golang.org/x/text v0.3.4
