@@ -256,7 +256,7 @@ jobs:
         ACTIONS_STEP_DEBUG: true
         TOKEN: ${{ steps.generate_token.outputs.token }}
       name: Slash Command Dispatch
-      uses: peter-evans/slash-command-dispatch@v3
+      uses: peter-evans/slash-command-dispatch@v4
       with:
         commands: ok-to-test
         issue-type: pull-request
