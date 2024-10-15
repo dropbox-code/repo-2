@@ -3,9 +3,10 @@ module github.com/influxdata/telegraf
 go 1.16
 
 require (
-	cloud.google.com/go v0.56.0
-	cloud.google.com/go/bigquery v1.4.0
-	cloud.google.com/go/pubsub v1.2.0
+	cloud.google.com/go v0.116.0 // indirect
+	cloud.google.com/go/bigquery v1.62.0
+	cloud.google.com/go/monitoring v1.21.0
+	cloud.google.com/go/pubsub v1.42.0
 	code.cloudfoundry.org/clock v1.0.0 // indirect
 	collectd.org v0.5.0
 	github.com/Azure/azure-event-hubs-go/v3 v3.2.0
@@ -23,7 +24,7 @@ require (
 	github.com/amir/raidman v0.0.0-20170415203553-1ccc43bfb9c9
 	github.com/antchfx/xmlquery v1.3.5
 	github.com/antchfx/xpath v1.1.11
-	github.com/apache/thrift v0.13.0
+	github.com/apache/thrift v0.17.0
 	github.com/aristanetworks/glog v0.0.0-20191112221043-67e8567f59f3 // indirect
 	github.com/aristanetworks/goarista v0.0.0-20190325233358-a123909ec740
 	github.com/aws/aws-sdk-go v1.34.34
@@ -60,14 +61,13 @@ require (
 	github.com/gofrs/uuid v2.1.0+incompatible
 	github.com/gogo/protobuf v1.3.1
 	github.com/golang/geo v0.0.0-20190916061304-5b978397cfec
-	github.com/golang/protobuf v1.5.1
-	github.com/golang/snappy v0.0.1
-	github.com/google/go-cmp v0.5.5
+	github.com/golang/protobuf v1.5.4
+	github.com/golang/snappy v0.0.4
+	github.com/google/go-cmp v0.6.0
 	github.com/google/go-github/v32 v32.1.0
 	github.com/gopcua/opcua v0.1.13
 	github.com/gorilla/mux v1.7.3
 	github.com/gosnmp/gosnmp v1.30.0
-	github.com/grpc-ecosystem/grpc-gateway v1.16.0 // indirect
 	github.com/hailocab/go-hostpool v0.0.0-20160125115350-e80d13ce29ed // indirect
 	github.com/harlow/kinesis-consumer v0.3.1-0.20181230152818-2f58b136fee0
 	github.com/hashicorp/consul/api v1.6.0
@@ -97,7 +97,7 @@ require (
 	github.com/openzipkin/zipkin-go-opentracing v0.3.4
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.7.1
-	github.com/prometheus/client_model v0.2.0
+	github.com/prometheus/client_model v0.6.0
 	github.com/prometheus/common v0.13.0
 	github.com/prometheus/procfs v0.1.3
 	github.com/prometheus/prometheus v1.8.2-0.20200911110723-e83ef207b6c2
@@ -110,9 +110,9 @@ require (
 	github.com/sirupsen/logrus v1.6.0
 	github.com/soniah/gosnmp v1.25.0
 	github.com/streadway/amqp v0.0.0-20190827072141-edfb9018d271
-	github.com/stretchr/testify v1.7.0
+	github.com/stretchr/testify v1.9.0
 	github.com/tbrandon/mbserver v0.0.0-20170611213546-993e1772cc62
-	github.com/tidwall/gjson v1.6.0
+	github.com/tidwall/gjson v1.14.2
 	github.com/tinylib/msgp v1.1.5
 	github.com/vapourismo/knx-go v0.0.0-20201122213738-75fe09ace330
 	github.com/vishvananda/netlink v0.0.0-20171020171820-b2de5d10e38e // indirect
@@ -126,15 +126,16 @@ require (
 	github.com/yuin/gopher-lua v0.0.0-20180630135845-46796da1b0b4 // indirect
 	go.starlark.net v0.0.0-20210312235212-74c10e2c17dc
 	go.uber.org/multierr v1.6.0 // indirect
-	golang.org/x/net v0.0.0-20201209123823-ac852fbbde11
-	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
-	golang.org/x/sync v0.0.0-20201020160332-67f06af15bc9
-	golang.org/x/sys v0.0.0-20201119102817-f84b799fce68
-	golang.org/x/text v0.3.4
+	golang.org/x/net v0.29.0
+	golang.org/x/oauth2 v0.23.0
+	golang.org/x/sync v0.8.0
+	golang.org/x/sys v0.25.0
+	golang.org/x/text v0.18.0
 	golang.zx2c4.com/wireguard/wgctrl v0.0.0-20200205215550-e35592f146e4
-	google.golang.org/api v0.29.0
-	google.golang.org/genproto v0.0.0-20200815001618-f69a88009b70
-	google.golang.org/grpc v1.33.1
+	google.golang.org/api v0.197.0
+	google.golang.org/genproto v0.0.0-20240903143218-8af14fe29dc1
+	google.golang.org/genproto/googleapis/api v0.0.0-20240903143218-8af14fe29dc1
+	google.golang.org/grpc v1.66.2
 	gopkg.in/djherbis/times.v1 v1.2.0
 	gopkg.in/fatih/pool.v2 v2.0.0 // indirect
 	gopkg.in/gorethink/gorethink.v3 v3.0.5
@@ -146,7 +147,7 @@ require (
 	k8s.io/api v0.20.4
 	k8s.io/apimachinery v0.20.4
 	k8s.io/client-go v0.20.4
-	modernc.org/sqlite v1.7.4
+	modernc.org/sqlite v1.21.2
 )
 
 // replaced due to https://github.com/satori/go.uuid/issues/73
