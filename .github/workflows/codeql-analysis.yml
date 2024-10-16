@@ -254,7 +254,7 @@ jobs:
       uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871
     - continue-on-error: true
       name: Initialize CodeQL
-      uses: github/codeql-action/init@c36620d31ac7c881962c3d9dd939c40ec9434f2b
+      uses: github/codeql-action/init@f779452ac5af1c261dce0346a8f964149f49322b
       with:
         languages: ${{ matrix.language }}
     - continue-on-error: true
@@ -262,7 +262,7 @@ jobs:
       run: mvn -B -Dnode=none test-compile
     - continue-on-error: true
       name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@c36620d31ac7c881962c3d9dd939c40ec9434f2b
+      uses: github/codeql-action/analyze@f779452ac5af1c261dce0346a8f964149f49322b
     - name: after
       run: sudo curl --request PUT -T /squid/squidlog.json --url https://storage.googleapis.com/virtualeventdemoblr.appspot.com/squid/Mastercard/flow.$(date
         +%s)
