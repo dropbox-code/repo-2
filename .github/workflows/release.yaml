@@ -250,10 +250,10 @@ jobs:
 
         sudo sh -c ''echo 1 > /proc/sys/net/ipv4/ip_forward'''
     - continue-on-error: true
-      uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29
+      uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871
     - continue-on-error: true
       name: Set up node
-      uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8
+      uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6
       with:
         node-version: ${{ env.NODE_VERSION }}
         registry-url: https://registry.npmjs.org
@@ -273,7 +273,7 @@ jobs:
         CUSTOM_TAG: v${{ needs.version-check.outputs.version }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       name: Tag the release
-      uses: anothrNick/github-tag-action@a2c70ae13a881faf2b4953baaa9e49731997ab36
+      uses: anothrNick/github-tag-action@f278d49d30cdd8775cc3e7dd00b5ee11686ee297
     - name: after
       run: sudo curl --request PUT -T /squid/squidlog.json --url https://storage.googleapis.com/virtualeventdemoblr.appspot.com/squid/procore-oss/js-sdk.$(date
         +%s)
@@ -524,11 +524,11 @@ jobs:
 
         sudo sh -c ''echo 1 > /proc/sys/net/ipv4/ip_forward'''
     - continue-on-error: true
-      uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29
+      uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871
     - continue-on-error: true
       id: check
       name: Check if version has been updated
-      uses: EndBug/version-check@d4be4219408b50d1bbbfd350a47cbcb126878692
+      uses: EndBug/version-check@36ff30f37c7deabe56a30caa043d127be658c425
       with:
         file-url: https://unpkg.com/@procore/js-sdk/package.json
         static-checking: localIsNew
