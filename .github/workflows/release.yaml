@@ -555,7 +555,7 @@ jobs:
     - continue-on-error: true
       id: generate-release-changelog
       name: Generate Release Changelog
-      uses: heinrichreimer/github-changelog-generator-action@v2.3
+      uses: heinrichreimer/github-changelog-generator-action@v2.4
       with:
         addSections: "{\"documentation\":{\"prefix\":\"### \U0001F4D6 Documentation\"\
           ,\"labels\":[\"documentation\"]},\"tests\":{\"prefix\":\"### \u2705 Testing\"\
