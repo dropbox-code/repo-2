@@ -269,7 +269,7 @@ jobs:
     - continue-on-error: true
       if: github.event_name != 'pull_request'
       name: Login to Registry
-      uses: docker/login-action@v2
+      uses: docker/login-action@v3
       with:
         password: ${{ secrets[matrix.password_secret] }}
         registry: ${{ matrix.registry }}
