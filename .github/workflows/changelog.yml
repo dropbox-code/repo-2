@@ -250,7 +250,7 @@ jobs:
       with:
         ref: main
     - continue-on-error: true
-      uses: rhysd/changelog-from-release/action@f2daf5ee230a1fff1bec36729e4240a28c8ad008
+      uses: rhysd/changelog-from-release/action@78b5ceeed388523bea8a11eb81cd169e95a05571
       with:
         file: CHANGELOG.md
         github_token: ${{ secrets.GITHUB_TOKEN }}
