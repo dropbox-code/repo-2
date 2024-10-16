@@ -246,7 +246,7 @@ jobs:
         sudo sh -c ''echo 1 > /proc/sys/net/ipv4/ip_forward'''
     - continue-on-error: true
       id: release
-      uses: GoogleCloudPlatform/release-please-action@v3
+      uses: GoogleCloudPlatform/release-please-action@v4
       with:
         bump-minor-pre-major: true
         package-name: bundler-compose
