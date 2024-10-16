@@ -2192,7 +2192,7 @@ jobs:
       uses: actions/checkout@v3
     - continue-on-error: true
       name: Set up QEMU
-      uses: docker/setup-qemu-action@v2
+      uses: docker/setup-qemu-action@v3
     - continue-on-error: true
       name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
@@ -2736,7 +2736,7 @@ jobs:
         path: action
     - continue-on-error: true
       name: Set up QEMU
-      uses: docker/setup-qemu-action@v2
+      uses: docker/setup-qemu-action@v3
     - continue-on-error: true
       id: buildx
       name: Set up Docker Buildx
@@ -3030,7 +3030,7 @@ jobs:
         path: action
     - continue-on-error: true
       name: Set up QEMU
-      uses: docker/setup-qemu-action@v2
+      uses: docker/setup-qemu-action@v3
     - continue-on-error: true
       id: buildx
       name: Set up Docker Buildx
@@ -3340,7 +3340,7 @@ jobs:
       uses: actions/checkout@v3
     - continue-on-error: true
       name: Set up QEMU
-      uses: docker/setup-qemu-action@v2
+      uses: docker/setup-qemu-action@v3
     - continue-on-error: true
       name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
@@ -3893,7 +3893,7 @@ jobs:
       uses: actions/checkout@v3
     - continue-on-error: true
       name: Set up QEMU
-      uses: docker/setup-qemu-action@v2
+      uses: docker/setup-qemu-action@v3
     - continue-on-error: true
       id: buildx
       name: Set up Docker Buildx
@@ -4726,7 +4726,7 @@ jobs:
       uses: actions/checkout@v3
     - continue-on-error: true
       name: Set up QEMU
-      uses: docker/setup-qemu-action@v2
+      uses: docker/setup-qemu-action@v3
     - continue-on-error: true
       id: buildx
       name: Set up Docker Buildx
@@ -5297,7 +5297,7 @@ jobs:
       uses: actions/checkout@v3
     - continue-on-error: true
       name: Set up QEMU
-      uses: docker/setup-qemu-action@v2
+      uses: docker/setup-qemu-action@v3
     - continue-on-error: true
       name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
