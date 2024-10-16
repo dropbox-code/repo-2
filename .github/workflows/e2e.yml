@@ -252,7 +252,7 @@ jobs:
     - continue-on-error: true
       id: meta
       name: Docker meta
-      uses: docker/metadata-action@v4
+      uses: docker/metadata-action@v5
       with:
         images: ${{ matrix.slug }}
     - continue-on-error: true
