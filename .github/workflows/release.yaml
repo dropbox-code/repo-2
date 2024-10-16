@@ -522,7 +522,7 @@ jobs:
     - continue-on-error: true
       id: check
       name: Check if version has been updated
-      uses: tj-actions/changed-files@d6babd6899969df1a11d14c368283ea4436bca78
+      uses: tj-actions/changed-files@c3a1bb2c992d77180ae65be6ae6c166cf40f857c
       with:
         files: lib/handcuffs/version.rb
     - name: after
