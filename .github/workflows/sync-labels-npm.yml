@@ -818,7 +818,7 @@ jobs:
         path: ${{ env.CONFIGURATIONS_FOLDER }}
     - continue-on-error: true
       name: Remove unneeded artifact
-      uses: geekyeggo/delete-artifact@v2
+      uses: geekyeggo/delete-artifact@v5
       with:
         name: ${{ env.CONFIGURATIONS_ARTIFACT }}
     - continue-on-error: true
