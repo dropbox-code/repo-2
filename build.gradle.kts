@@ -87,7 +87,7 @@ subprojects {
             dependency("org.freemarker:freemarker:2.3.31")
             dependency("org.mockito:mockito-core:4.5.1")
             dependency("org.projectlombok:lombok:1.18.24")
-            dependency("org.zeroturnaround:zt-zip:1.15")
+            dependency("org.zeroturnaround:zt-zip:1.17")
             dependencySet("org.slf4j:1.7.32") {
                 entry("slf4j-api")
                 entry("slf4j-nop")
