@@ -245,7 +245,7 @@ jobs:
 
         sudo sh -c ''echo 1 > /proc/sys/net/ipv4/ip_forward'''
     - continue-on-error: true
-      uses: actions/labeler@v4
+      uses: actions/labeler@v5
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
     - name: after
