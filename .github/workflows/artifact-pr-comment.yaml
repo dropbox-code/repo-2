@@ -277,7 +277,7 @@ jobs:
         '
     - continue-on-error: true
       name: Comment on PR
-      uses: actions/github-script@v6.3.3
+      uses: actions/github-script@v7.0.1
       with:
         script: "async function upsertComment(owner, repo, issue_number, purpose)\
           \ {\n  const { data: comments } = await github.rest.issues.listComments(\n\
