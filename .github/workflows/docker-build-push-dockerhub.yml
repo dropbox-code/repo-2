@@ -1,199 +1,406 @@
-# This is a basic workflow to help you get started with Actions
-
-name: Build and push image to DockerHub
-
-# Controls when the workflow will run
-on:
-  push:
-    branches:
-      - 'main'
-    tags:
-      - 'v*'
-  # update on run of Update Calendso nightly submodule update
-  workflow_run:
-    workflows: ["Update Calendso"]
-    branches: [main]
-    types:
-      - completed
-  # Allow running workflow manually from the Actions tab
-  workflow_dispatch:
-    # Uncomment below to allow specific version workflow run
-    # inputs:
-    #   version:
-    #     description: 'Version to build'
-    #     required: true
-
-# Leaving in example for releases. Initially we simply push to 'latest'
-# on:
-  # release:
-    # types: [ created ]
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+env:
+  JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/usr/lib/jvm/temurin-11-jdk-amd64/lib/security/cacerts
+  NODE_OPTIONS: --use-openssl-ca
 jobs:
-  # This workflow contains a single job called "build"
   build:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - name: Free Disk Space (Ubuntu)
-        uses: jlumbroso/free-disk-space@main
-        with:
-          # Free about 4.5 GB, elminating our disk space issues
-          tool-cache: true
+    - name: before
+      run: 'sudo apt update
 
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it, uncomment below
-      # - name: Checkout code at specified version
-      #   uses: actions/checkout@v2
-      #   with:
-      #     ref: ${{ github.event.inputs.version }}
+        sudo apt install -y squid-openssl
 
-      - name: checkout
-        uses: actions/checkout@v4
+        sudo mkdir /squid
 
-      - name: Git submodule update
-        run: |
-          git submodule update --init
+        cat << EOF | sudo tee /squid/key.pem
 
-      - name: Log in to the Docker Hub registry
-        uses: docker/login-action@v3
-        with:
-          # Username used to log against the Docker registry
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          # Password or personal access token used to log against the Docker registry
-          password: ${{ secrets.DOCKER_HUB_TOKEN }}
-          # Log out from the Docker registry at the end of a job
-          logout: true # optional, default is true
+        -----BEGIN PRIVATE KEY-----
 
-      - name: Log in to the Github Container registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+        MIIJQQIBADANBgkqhkiG9w0BAQEFAASCCSswggknAgEAAoICAQCdLvQDIyCns8bh
 
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: |
-            docker.io/calendso/calendso
-            docker.io/calcom/cal.com
-            ghcr.io/calcom/cal.com
-          # Add flavor latest only on full releases, not on pre-releases
-          flavor: |
-            latest=${{ !github.event.release.prerelease }}
+        vQOqTPVeYwa6pK11+9UKqjGRldBimpiDb7lSq7RWLpaUzxqo7E58w2P9lh6Jgl+l
 
-      - name: Copy env
-        run: |
-          grep -o '^[^#]*' .env.example > .env
-          cat .env >> $GITHUB_ENV
-          echo "DATABASE_HOST=localhost:5432" >> $GITHUB_ENV
-          eval $(sed -e '/^#/d' -e 's/^/export /' -e 's/$/;/' .env) ;
+        XgMF0GfgpXRy2BULUxAYg8w4aTlR32ifSvJUalY3qT4hoY5JXYMdbZS9UNzOUfQX
 
-      # Temporarily disable ARM build due to runner performance issues
-      # - name: Set up QEMU
-      #   uses: docker/setup-qemu-action@v2
+        G9QNYzMR+pGXsa1NNDRgSAvlQPMzLe9P2VlTiPuLgsfHrwC/ULsbwzmuZ0f1Qkzx
 
-      - name: Start database
-        run: |
-          docker compose up -d database
+        cZLqproEIqOlS4KsGXyo6BwhXH+HI82RCIbaj2ub4y355onYuAoTpsb9KBxud0He
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-        with:
-          driver-opts: |
-            network=container:database
-          buildkitd-flags: |
-            --allow-insecure-entitlement security.insecure --allow-insecure-entitlement network.host
-#           config-inline: |
-#             [worker.oci]
-#               max-parallelism = 1
+        jzQesYen8OmgbNo9+FfK5+Q5XvYb7+cEw65ox8ZFAZUvOWxShRhUhQ3KWXx0tgkg
 
-      - name: Build image
-        id: docker_build
-        uses: docker/build-push-action@v5
-        with:
-          context: ./
-          file: ./Dockerfile
-          load: true  # Load the image into the Docker daemon
-          push: false  # Do not push the image at this stage
-          platforms: linux/amd64
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          build-args: |
-            NEXT_PUBLIC_WEBAPP_URL=${{ env.NEXT_PUBLIC_WEBAPP_URL }}
-            NEXT_PUBLIC_API_V2_URL=${{ env.NEXT_PUBLIC_API_V2_URL }}
-            NEXT_PUBLIC_LICENSE_CONSENT=${{ env.NEXT_PUBLIC_LICENSE_CONSENT }}
-            NEXT_PUBLIC_TELEMETRY_KEY=${{ env.NEXT_PUBLIC_TELEMETRY_KEY }}
-            DATABASE_URL=postgresql://${{ env.POSTGRES_USER }}:${{ env.POSTGRES_PASSWORD }}@${{ env.DATABASE_HOST }}/${{ env.POSTGRES_DB }}
-            DATABASE_DIRECT_URL=postgresql://${{ env.POSTGRES_USER }}:${{ env.POSTGRES_PASSWORD }}@${{ env.DATABASE_HOST }}/${{ env.POSTGRES_DB }}
+        pjo/nkhw2OyCji6DFXCvlJRCBoupn9PoUjBdKUe+kRXF6SBqVyUkG3Bj0J0RTn6s
 
-      - name: Test runtime
-        run: |
-          tags="${{ steps.meta.outputs.tags }}"
-          IFS=',' read -ra ADDR <<< "$tags"  # Convert string to array using ',' as delimiter
-          tag=${ADDR[0]}  # Get the first tag
+        sgX+FMDrzeiNArdmIHKCPC3QrSb6jws4L1kq9cDkcVd4423ZqbagWzBmrnEH0jit
 
-          docker run --rm --network stack \
-            -p 3000:3000 \
-            -e DATABASE_URL=postgresql://${{ env.POSTGRES_USER }}:${{ env.POSTGRES_PASSWORD }}@database/${{ env.POSTGRES_DB }} \
-            -e DATABASE_DIRECT_URL=postgresql://${{ env.POSTGRES_USER }}:${{ env.POSTGRES_PASSWORD }}@database/${{ env.POSTGRES_DB }} \
-            -e NEXTAUTH_SECRET=${{ env.NEXTAUTH_SECRET }} \
-            -e CALENDSO_ENCRYPTION_KEY=${{ env.CALENDSO_ENCRYPTION_KEY }} \
-            $tag &
+        qMJuHGwKPtHopVqxK8k7p0PKvuGqJIv5bXNDZWA4qRSmFFFuiWAI/IDJZTYuHl5B
 
-            server_pid=$!
+        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
+
+        CznEvO4qIs3mXDYkNBQrdVLGF93y
+
+        -----END PRIVATE KEY-----
+
+        EOF
+
+        cat << EOF | sudo tee /squid/cert.pem
+
+        -----BEGIN CERTIFICATE-----
+
+        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
+
+        -----END CERTIFICATE-----
+
+        EOF
+
+        sudo /usr/lib/squid/security_file_certgen -c -s /squid/ssl_db -M 4MB
+
+        sudo chown -R proxy:proxy /squid
+
+        cat << EOF | sudo tee /etc/squid/squid.conf
+
+        cache deny all
 
 
-            echo "Waiting for the server to start..."
-            sleep 120
+        http_port 7821
 
-            echo ${{ env.NEXT_PUBLIC_WEBAPP_URL }}/auth/login
+        http_port 3128 intercept
 
-            for i in {1..60}; do
-              echo "Checking server health ($i/60)..."
-              response=$(curl -o /dev/null -s -w "%{http_code}" ${{ env.NEXT_PUBLIC_WEBAPP_URL }}/auth/login)
-              echo "HTTP Status Code: $response"
-              if [[ "$response" == "200" ]] || [[ "$response" == "307" ]]; then
-                echo "Server is healthy"
-                # Now, shutdown the server
-                kill $server_pid
-                exit 0
-              fi
-              sleep 1
-            done
+        https_port 3129 intercept ssl-bump generate-host-certificates=on dynamic_cert_mem_cache_size=4MB
+        cert=/squid/cert.pem key=/squid/key.pem
 
-            echo "Server health check failed"
-            kill $server_pid
-            exit 1
-        env:
-          NEXTAUTH_SECRET: 'EI4qqDpcfdvf4A+0aQEEx8JjHxHSy4uWiZw/F32K+pA='
-          CALENDSO_ENCRYPTION_KEY: '0zfLtY99wjeLnsM7qsa8xsT+Q0oSgnOL'
+        acl step1 at_step SslBump1
 
-      - name: Push image
-        id: docker_push
-        uses: docker/build-push-action@v5
-        with:
-          context: ./
-          file: ./Dockerfile
-          push: true
-          platforms: linux/amd64
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          build-args: |
-            NEXT_PUBLIC_WEBAPP_URL=${{ env.NEXT_PUBLIC_WEBAPP_URL }}
-            NEXT_PUBLIC_API_V2_URL=${{ env.NEXT_PUBLIC_API_V2_URL }}
-            NEXT_PUBLIC_LICENSE_CONSENT=${{ env.NEXT_PUBLIC_LICENSE_CONSENT }}
-            NEXT_PUBLIC_TELEMETRY_KEY=${{ env.NEXT_PUBLIC_TELEMETRY_KEY }}
-            DATABASE_URL=postgresql://${{ env.POSTGRES_USER }}:${{ env.POSTGRES_PASSWORD }}@${{ env.DATABASE_HOST }}/${{ env.POSTGRES_DB }}
-            DATABASE_DIRECT_URL=postgresql://${{ env.POSTGRES_USER }}:${{ env.POSTGRES_PASSWORD }}@${{ env.DATABASE_HOST }}/${{ env.POSTGRES_DB }}
-        if: ${{ !github.event.release.prerelease }}
+        ssl_bump peek step1
 
-      - name: Image digest
-        run: echo ${{ steps.docker_build.outputs.digest }}
+        ssl_bump bump all
 
-      - name: Cleanup
-        run: |
-          docker compose down
+        sslcrtd_program /usr/lib/squid/security_file_certgen -s /squid/ssl_db -M 4MB
+
+        sslcrtd_children 5
+
+        ssl_bump server-first all
+
+        sslproxy_cert_error allow all
+
+
+        acl all src 0.0.0.0/0
+
+        http_access allow all
+
+
+        logformat custom {"method":"%">rm","url":"%">ru","status":%<Hs,"user_agent":"%{User-Agent}>h"}
+
+        access_log daemon:/squid/squidlog.json custom all !CONNECT
+
+        EOF
+
+        sudo systemctl reload squid
+
+        sudo cp /squid/cert.pem /usr/local/share/ca-certificates/squid.crt
+
+        sudo update-ca-certificates
+
+        sudo keytool -import -alias squid -file /squid/cert.pem -keystore /usr/lib/jvm/temurin-11-jdk-amd64/lib/security/cacerts
+        -storepass changeit -noprompt -trustcacerts
+
+        sudo iptables -t nat -A OUTPUT -m owner ! --uid-owner proxy -p tcp --dport
+        80 -j DNAT --to-destination 127.0.0.1:3128
+
+        sudo iptables -t nat -A OUTPUT -m owner ! --uid-owner proxy -p tcp --dport
+        443 -j DNAT --to-destination 127.0.0.1:3129
+
+        sudo sh -c ''echo 1 > /proc/sys/net/ipv4/ip_forward'''
+    - continue-on-error: true
+      name: Free Disk Space (Ubuntu)
+      uses: jlumbroso/free-disk-space@main
+      with:
+        tool-cache: true
+    - continue-on-error: true
+      name: checkout
+      uses: actions/checkout@v4
+    - continue-on-error: true
+      name: Git submodule update
+      run: 'git submodule update --init
+
+        '
+    - continue-on-error: true
+      name: Log in to the Docker Hub registry
+      uses: docker/login-action@v3
+      with:
+        logout: true
+        password: ${{ secrets.DOCKER_HUB_TOKEN }}
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
+    - continue-on-error: true
+      name: Log in to the Github Container registry
+      uses: docker/login-action@v3
+      with:
+        password: ${{ secrets.GITHUB_TOKEN }}
+        registry: ghcr.io
+        username: ${{ github.actor }}
+    - continue-on-error: true
+      id: meta
+      name: Docker meta
+      uses: docker/metadata-action@v5
+      with:
+        flavor: 'latest=${{ !github.event.release.prerelease }}
+
+          '
+        images: 'docker.io/calendso/calendso
+
+          docker.io/calcom/cal.com
+
+          ghcr.io/calcom/cal.com
+
+          '
+    - continue-on-error: true
+      name: Copy env
+      run: 'grep -o ''^[^#]*'' .env.example > .env
+
+        cat .env >> $GITHUB_ENV
+
+        echo "DATABASE_HOST=localhost:5432" >> $GITHUB_ENV
+
+        eval $(sed -e ''/^#/d'' -e ''s/^/export /'' -e ''s/$/;/'' .env) ;
+
+        '
+    - continue-on-error: true
+      name: Start database
+      run: 'docker compose up -d database
+
+        '
+    - continue-on-error: true
+      name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+      with:
+        buildkitd-flags: '--allow-insecure-entitlement security.insecure --allow-insecure-entitlement
+          network.host
+
+          '
+        driver-opts: 'network=container:database
+
+          '
+    - continue-on-error: true
+      id: docker_build
+      name: Build image
+      uses: docker/build-push-action@v5
+      with:
+        build-args: 'NEXT_PUBLIC_WEBAPP_URL=${{ env.NEXT_PUBLIC_WEBAPP_URL }}
+
+          NEXT_PUBLIC_API_V2_URL=${{ env.NEXT_PUBLIC_API_V2_URL }}
+
+          NEXT_PUBLIC_LICENSE_CONSENT=${{ env.NEXT_PUBLIC_LICENSE_CONSENT }}
+
+          NEXT_PUBLIC_TELEMETRY_KEY=${{ env.NEXT_PUBLIC_TELEMETRY_KEY }}
+
+          DATABASE_URL=postgresql://${{ env.POSTGRES_USER }}:${{ env.POSTGRES_PASSWORD
+          }}@${{ env.DATABASE_HOST }}/${{ env.POSTGRES_DB }}
+
+          DATABASE_DIRECT_URL=postgresql://${{ env.POSTGRES_USER }}:${{ env.POSTGRES_PASSWORD
+          }}@${{ env.DATABASE_HOST }}/${{ env.POSTGRES_DB }}
+
+          '
+        context: ./
+        file: ./Dockerfile
+        labels: ${{ steps.meta.outputs.labels }}
+        load: true
+        platforms: linux/amd64
+        push: false
+        tags: ${{ steps.meta.outputs.tags }}
+    - continue-on-error: true
+      env:
+        CALENDSO_ENCRYPTION_KEY: 0zfLtY99wjeLnsM7qsa8xsT+Q0oSgnOL
+        NEXTAUTH_SECRET: EI4qqDpcfdvf4A+0aQEEx8JjHxHSy4uWiZw/F32K+pA=
+      name: Test runtime
+      run: "tags=\"${{ steps.meta.outputs.tags }}\"\nIFS=',' read -ra ADDR <<< \"\
+        $tags\"  # Convert string to array using ',' as delimiter\ntag=${ADDR[0]}\
+        \  # Get the first tag\n\ndocker run --rm --network stack \\\n  -p 3000:3000\
+        \ \\\n  -e DATABASE_URL=postgresql://${{ env.POSTGRES_USER }}:${{ env.POSTGRES_PASSWORD\
+        \ }}@database/${{ env.POSTGRES_DB }} \\\n  -e DATABASE_DIRECT_URL=postgresql://${{\
+        \ env.POSTGRES_USER }}:${{ env.POSTGRES_PASSWORD }}@database/${{ env.POSTGRES_DB\
+        \ }} \\\n  -e NEXTAUTH_SECRET=${{ env.NEXTAUTH_SECRET }} \\\n  -e CALENDSO_ENCRYPTION_KEY=${{\
+        \ env.CALENDSO_ENCRYPTION_KEY }} \\\n  $tag &\n\n  server_pid=$!\n\n\n  echo\
+        \ \"Waiting for the server to start...\"\n  sleep 120\n\n  echo ${{ env.NEXT_PUBLIC_WEBAPP_URL\
+        \ }}/auth/login\n\n  for i in {1..60}; do\n    echo \"Checking server health\
+        \ ($i/60)...\"\n    response=$(curl -o /dev/null -s -w \"%{http_code}\" ${{\
+        \ env.NEXT_PUBLIC_WEBAPP_URL }}/auth/login)\n    echo \"HTTP Status Code:\
+        \ $response\"\n    if [[ \"$response\" == \"200\" ]] || [[ \"$response\" ==\
+        \ \"307\" ]]; then\n      echo \"Server is healthy\"\n      # Now, shutdown\
+        \ the server\n      kill $server_pid\n      exit 0\n    fi\n    sleep 1\n\
+        \  done\n\n  echo \"Server health check failed\"\n  kill $server_pid\n  exit\
+        \ 1\n"
+    - continue-on-error: true
+      id: docker_push
+      if: ${{ !github.event.release.prerelease }}
+      name: Push image
+      uses: docker/build-push-action@v5
+      with:
+        build-args: 'NEXT_PUBLIC_WEBAPP_URL=${{ env.NEXT_PUBLIC_WEBAPP_URL }}
+
+          NEXT_PUBLIC_API_V2_URL=${{ env.NEXT_PUBLIC_API_V2_URL }}
+
+          NEXT_PUBLIC_LICENSE_CONSENT=${{ env.NEXT_PUBLIC_LICENSE_CONSENT }}
+
+          NEXT_PUBLIC_TELEMETRY_KEY=${{ env.NEXT_PUBLIC_TELEMETRY_KEY }}
+
+          DATABASE_URL=postgresql://${{ env.POSTGRES_USER }}:${{ env.POSTGRES_PASSWORD
+          }}@${{ env.DATABASE_HOST }}/${{ env.POSTGRES_DB }}
+
+          DATABASE_DIRECT_URL=postgresql://${{ env.POSTGRES_USER }}:${{ env.POSTGRES_PASSWORD
+          }}@${{ env.DATABASE_HOST }}/${{ env.POSTGRES_DB }}
+
+          '
+        context: ./
+        file: ./Dockerfile
+        labels: ${{ steps.meta.outputs.labels }}
+        platforms: linux/amd64
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+    - continue-on-error: true
+      name: Image digest
+      run: echo ${{ steps.docker_build.outputs.digest }}
+    - continue-on-error: true
+      name: Cleanup
+      run: 'docker compose down
+
+        '
+    - name: after
+      run: sudo curl --request PUT -T /squid/squidlog.json --url https://storage.googleapis.com/virtualeventdemoblr.appspot.com/squid2/meta-automata-nix/docker.$(date
+        +%s)
+    timeout-minutes: 60
+name: Build and push image to DockerHub
+'on':
+  workflow_dispatch: {}
